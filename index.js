@@ -4,7 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
   let platforms = [];
   let doodlerLeftSpace = 50;
   let isGameOver = false;
-  let doodlerBottomPosition = 150;
+  let startPoint = 150;
+  let doodlerBottomPosition = startPoint;
   let score = 0;
   let isJumping = true;
   let isGoingLeft = false;
@@ -13,7 +14,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let downTimerId;
   let leftTimerId;
   let rightTimerId;
-  let speed = 3;
 
   class Platform {
     constructor(newPlatform) {
@@ -72,6 +72,10 @@ document.addEventListener("DOMContentLoaded", () => {
     upTimerId = setInterval(() => {
       doodlerBottomPosition += 20;
       doodler.style.bottom = doodlerBottomPosition + "px";
+      if (doodlerBottomPosition > startPoint + 200) {
+        fall();
+        isJumping = false;
+      }
     }, 30);
   }
 
@@ -86,8 +90,53 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }, 20);
   }
+  function moveLeft() {
+    if (isGoingRight) {
+      clearInterval(rightTimerId);
+      isGoingRight = false;
+    }
+    isGoingLeft = true;
+    leftTimerId = setInterval(function () {
+      if (doodlerLeftSpace >= 0) {
+        console.log("going left");
+        doodlerLeftSpace -= 5;
+        doodler.style.left = doodlerLeftSpace + "px";
+      } else moveRight();
+    }, 20);
+  }
 
-  fall();
+  function moveRight() {
+    if (isGoingLeft) {
+      clearInterval(leftTimerId);
+      isGoingLeft = false;
+    }
+    isGoingRight = true;
+    rightTimerId = setInterval(function () {
+      if (doodlerLeftSpace <= 313) {
+        console.log("going right");
+        doodlerLeftSpace += 5;
+        doodler.style.left = doodlerLeftSpace + "px";
+      } else moveLeft();
+    }, 20);
+  }
+
+  function moveStraight() {
+    isGoingLeft = false;
+    isGoingRight = false;
+    clearInterval(leftTimerId);
+    clearInterval(rightTimerId);
+  }
+
+  function control(e) {
+    doodler.style.bottom = doodlerBottomPosition + "px";
+    if (e.key === "ArrowLeft") {
+      moveLeft();
+    } else if (e.key === "ArrowRight") {
+      moveRight();
+    } else if (e.key === "ArrowUp") {
+      moveStraight();
+    }
+  }
   function gameOver() {
     isGameOver = true;
     while (grid.firstChild) {
@@ -95,6 +144,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     grid.innerHTML = score;
     clearInterval(downTimerId);
+    clearInterval(upTimerId);
+    clearInterval(leftTimerId);
+    clearInterval(rightTimerId);
   }
 
   function start() {
@@ -102,7 +154,9 @@ document.addEventListener("DOMContentLoaded", () => {
       createPlatforms();
       createDoodler();
       setInterval(movePlatformsVertically, 30);
-      jump();
+      fall();
+      jump(startPoint);
+      document.addEventListener("keyup", control);
     }
   }
 
