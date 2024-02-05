@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const grid = document.querySelector(".grid");
   const doodler = document.createElement("div");
+  let platforms = [];
   let isGameOver = false;
   let doodlerBottomPosition = 150;
 
@@ -17,6 +18,18 @@ document.addEventListener("DOMContentLoaded", () => {
       grid.appendChild(visual);
     }
   }
+
+  function createPlatforms() {
+    for (let i = 0; i < 5; i++) {
+      let platFormGap = 600 / 5;
+      let newPlatform = 100 + platFormGap * i;
+      let newPlatforms = new Platform(newPlatform);
+      platforms.push(newPlatforms);
+      console.log(platforms);
+    }
+  }
+
+  createPlatforms();
 
   function createDoodler() {
     grid.appendChild(doodler);

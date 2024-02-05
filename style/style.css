@@ -14,3 +14,9 @@
   position: absolute;
 }
 
+.platform {
+  width: 85px;
+  height: 15px;
+  background-image: url("../assets/platform.png");
+  position: absolute;
+}
