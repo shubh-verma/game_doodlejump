@@ -88,6 +88,19 @@ document.addEventListener("DOMContentLoaded", () => {
       if (doodlerBottomPosition <= 0) {
         gameOver();
       }
+      platforms.forEach((platform) => {
+        if (
+          doodlerBottomPosition >= platform.bottom &&
+          doodlerBottomPosition <= platform.bottom + 15 &&
+          doodlerLeftSpace + 60 >= platform.left &&
+          doodlerLeftSpace <= platform.left + 85 &&
+          !isJumping
+        ) {
+          startPoint = doodlerBottomPosition;
+          jump();
+          isJumping = true;
+        }
+      });
     }, 20);
   }
   function moveLeft() {
