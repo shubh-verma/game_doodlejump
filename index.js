@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const grid = document.querySelector(".grid");
   const doodler = document.createElement("div");
   let platforms = [];
+  let doodlerLeftSpace = 50;
   let isGameOver = false;
   let doodlerBottomPosition = 150;
 
@@ -22,19 +23,40 @@ document.addEventListener("DOMContentLoaded", () => {
   function createPlatforms() {
     for (let i = 0; i < 5; i++) {
       let platFormGap = 600 / 5;
-      let newPlatform = 100 + platFormGap * i;
-      let newPlatforms = new Platform(newPlatform);
-      platforms.push(newPlatforms);
+      let newPlatformBottom = 100 + platFormGap * i;
+      let newPlatform = new Platform(newPlatformBottom);
+      platforms.push(newPlatform);
       console.log(platforms);
     }
   }
 
-  createPlatforms();
+  function movePlatformsVertically() {
+    if (doodlerBottomPosition < 200) {
+      platforms.forEach((platform) => {
+        platform.bottom -= 4;
+        let visual = platform.visual;
+        visual.style.bottom = platform.bottom + "px";
+        console.log(platforms);
+      });
+    }
+    console.log(doodlerBottomPosition);
+  }
 
   function createDoodler() {
     grid.appendChild(doodler);
     doodler.classList.add("doodler");
+    doodlerLeftSpace = platforms[0].left;
+    doodler.style.left = doodlerLeftSpace + "px";
     doodler.style.bottom = doodlerBottomPosition + "px";
   }
-  createDoodler();
+
+  function start() {
+    if (!isGameOver) {
+      createPlatforms();
+      createDoodler();
+      setInterval(movePlatformsVertically, 30);
+    }
+  }
+
+  start();
 });
